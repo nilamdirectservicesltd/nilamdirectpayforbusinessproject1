@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nilam Direct Pay for Business</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* CSS styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url(background.jpg);
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .quote {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+    
+    .btn-listen {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .language-slider {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    
+    .language-slider label {
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+    
+    .language-slider input[type="checkbox"] {
+      display: none;
+    }
+    
+    .language-slider .slider {
+      position: relative;
+      width: 60px;
+      height: 34px;
+      border-radius: 34px;
+      background-color: #ccc;
+      cursor: pointer;
+    }
+    
+    .language-slider .slider:before {
+      content: "";
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: #fff;
+      top: 4px;
+      left: 4px;
+      transition: transform 0.2s ease-in-out;
+    }
+    
+    .language-slider input[type="checkbox"]:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="quote">
+      "It's a great day to start your work!"
+    </div>
+    
+    <label for="amount">Enter amount in INR:</label>
+    <input type="text" id="amount" name="amount">
+    <div id="error-container" class="error"></div>
+    <button class="btn btn-primary btn-listen">Listen</button>
+    
+    <div class="language-slider">
+      <label for="language-toggle">Toggle Language:</label>
+      <input type="checkbox" id="language-toggle">
+      <div class="slider"></div>
+    </div>
+  </div>
+
+  <script>
+    // Check if the browser supports speech synthesis
+    if ('speechSynthesis' in window) {
+      const synthesis = window.speechSynthesis;
+      const amountInput = document.getElementById('amount');
+      const errorContainer = document.getElementById('error-container');
+      const listenButton = document.querySelector('.btn-listen');
+      const languageToggle = document.getElementById('language-toggle');
+
+      function validateAmount() {
+        const amount = amountInput.value.trim();
+        if (!/^\d+$/.test(amount)) {
+          showError('Please enter a valid amount.');
+        } else {
+          let message = `रुपये ${amount} नीलम डायरेक्ट पे फॉर बिज़नेस में क्रेडिट किया गया है।`;
+          if (languageToggle.checked) {
+            message = `Amount of ${amount} has been credited to Nilam Direct Pay for Business.`;
+          }
+          speakMessage(message);
+        }
+      }
+
+      function speakMessage(message) {
+        const utterance = new SpeechSynthesisUtterance(message);
+        if (languageToggle.checked) {
+          utterance.lang = 'en-US'; // Set language to English (United States)
+        } else {
+          utterance.lang = 'hi-IN'; // Set language to Hindi (India)
+        }
+        synthesis.speak(utterance);
+      }
+
+      function showError(errorMessage) {
+        errorContainer.textContent = errorMessage;
+        errorContainer.style.display = 'block';
+      }
+
+      amountInput.addEventListener('input', () => {
+        errorContainer.style.display = 'none';
+      });
+
+      listenButton.addEventListener('click', () => {
+        validateAmount();
+      });
+
+      // Validate amount when the form is submitted
+      document.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent form submission
+        validateAmount();
+      });
+    }
+  </script>
+  
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
